@@ -1,41 +1,47 @@
 buildscript {
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath 'com.github.dcendents:android-maven-plugin:1.0'
     }
+
 }
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 repositories {
     mavenCentral()
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    compileSdkVersion 30
+    buildToolsVersion '28.0.3'
+
+//    defaultConfig {
+//        minSdkVersion 8
+//        targetSdkVersion 19
+//        versionCode 4
+//        versionName "1.0.3"
+//    }
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 19
-        versionCode 4
-        versionName "1.0.3"
+        minSdkVersion 19
+        targetSdkVersion 30
     }
     buildTypes {
-        release {
-            runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-        }
+//        release {
+//            runProguard false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+//        }
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.+'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-}
+    implementation 'com.android.support:appcompat-v7:19.1.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')}
 
-apply plugin: 'android-maven'
-version = "1.0.3"
-group = "com.faradaj"
+//apply plugin: 'android-maven'
+//version = "1.0.3"
+//group = "com.faradaj"
