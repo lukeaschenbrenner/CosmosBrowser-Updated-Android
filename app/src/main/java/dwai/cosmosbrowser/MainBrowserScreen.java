@@ -19,23 +19,24 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dwai.cosmosbrowser.webkit.CosmosWebView;
 
 public class MainBrowserScreen extends Activity {
+    /** TODO: Add custom CSS files for commonly visited websites to save on space **/
 
     private static final String TAG = "MainBrowserScreen";
     public static CosmosWebView webView;
-    @InjectView(R.id.settingsListView)SettingsListView settingsListView;
-    @InjectView(R.id.rootWebView)CosmosWebView cosmosWebView;
-    @InjectView(R.id.searchBar)LinearLayout searchBar;
-    @InjectView(R.id.urlEditText)EditText urlEditText;
-    @InjectView(R.id.tabsListView)ListView tabsListView;
-    @InjectView(R.id.tabsButton)ImageView tabsButton;
-    @InjectView(R.id.moreSettingsButton)ImageView moreSettingsButton;
-    @InjectView(R.id.moreOptionsView)RelativeLayout moreOptionsView;
-    @InjectView(R.id.topSettingsBar)LinearLayout topSettingsBar;
+    @BindView(R.id.settingsListView)SettingsListView settingsListView;
+    @BindView(R.id.rootWebView)CosmosWebView cosmosWebView;
+    @BindView(R.id.searchBar)LinearLayout searchBar;
+    @BindView(R.id.urlEditText)EditText urlEditText;
+    @BindView(R.id.tabsListView)ListView tabsListView;
+    @BindView(R.id.tabsButton)ImageView tabsButton;
+    @BindView(R.id.moreSettingsButton)ImageView moreSettingsButton;
+    @BindView(R.id.moreOptionsView)RelativeLayout moreOptionsView;
+    @BindView(R.id.topSettingsBar)LinearLayout topSettingsBar;
     List<View> expandableViews = new ArrayList<View>();
 
 
@@ -45,7 +46,7 @@ public class MainBrowserScreen extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_browser_screen);
         webView = (CosmosWebView)findViewById(R.id.rootWebView);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             searchBar.setElevation(10);
             moreOptionsView.setElevation(13);
@@ -53,7 +54,8 @@ public class MainBrowserScreen extends Activity {
         expandableViews.add(moreOptionsView);
         expandableViews.add(tabsListView);
         webView.loadUrl("file:///android_asset/testfile.html");
-
+//        cosmosWebView = new CosmosWebView(this);
+        //don't need?
 
 
 

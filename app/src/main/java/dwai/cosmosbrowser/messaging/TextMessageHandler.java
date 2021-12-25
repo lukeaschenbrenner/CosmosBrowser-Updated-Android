@@ -2,12 +2,17 @@ package dwai.cosmosbrowser.messaging;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import dwai.cosmosbrowser.FullTextMessage;
 
+import androidx.appcompat.app.AlertDialog;
+
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +24,7 @@ import dwai.cosmosbrowser.MainBrowserScreen;
 public class TextMessageHandler {
 
     private final String TAG = "TextMessageHandler";
-    public static final String PHONE_NUMBER = "8443341241";
+    public static final String PHONE_NUMBER = "0018443341241";
 
 
 
@@ -67,6 +72,50 @@ public class TextMessageHandler {
                     MainBrowserScreen.webView.loadDataWithBaseURL(null,origin + " , " + body,"text/html","utf-8",null);
                 }
             }
+        }
+    }
+
+
+    //old merged methods:
+    static FullTextMessage fullTextMessage;
+
+    private void textToTwilio(String whatToSend) throws Exception{
+        fullTextMessage.texts = new ArrayList<String>();
+        String phone_Num = PHONE_NUMBER;
+        String send_msg = whatToSend;
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(phone_Num, null, send_msg, null, null);
+
+    }
+    private void sendStringToTwilio(String whatToSend){
+        String send_msg = whatToSend;
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(PHONE_NUMBER, null, send_msg, null, null);
+    }
+    private void generateAlertDialog(String message, Context context){
+        new AlertDialog.Builder(context)
+                .setTitle("Error!")
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+
+    private void saveFile(String name, String content, Context ctx) {
+        String filename = name;
+        String string = content;
+        FileOutputStream outputStream;
+        try {
+            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(string.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

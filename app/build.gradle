@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion '28.0.3'
     repositories {
         mavenCentral()
     }
@@ -10,7 +9,11 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
     }
-//    buildTypes {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    //    buildTypes {
 //        release {
 //            runProguard false
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -20,11 +23,15 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':blur-behind')
     implementation files('libs/listviewanimations_lib-core-slh.3.1.0.jar')
     implementation files('libs/listviewanimations_lib-core.3.1.0.jar')
     implementation files('libs/nineoldandroids-2.4.0.jar')
-    implementation files('libs/butterknife-5.1.2.jar')
+    //implementation files('libs/butterknife-5.1.2.jar')
+    implementation 'com.jakewharton:butterknife:10.2.3'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     implementation 'uk.co.ribot:easyadapter:1.5.0'
 }

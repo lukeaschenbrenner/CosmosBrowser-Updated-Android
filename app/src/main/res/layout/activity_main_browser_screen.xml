@@ -29,7 +29,7 @@
         <ListView
 
             android:visibility="invisible"
-            android:background = "@drawable/abc_menu_dropdown_panel_holo_light"
+            android:background = "@drawable/abc_popup_background_mtrl_mult"
             android:layout_below="@+id/searchBar"
             android:id = "@+id/tabsListView"
             android:layout_width="match_parent"
