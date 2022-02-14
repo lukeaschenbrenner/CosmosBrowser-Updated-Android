@@ -9,9 +9,6 @@ import android.widget.ListView;
 
 import dwai.cosmosbrowser.R;
 
-/**
- * Created by Stefan on 10/19/2014.
- */
 public class CosmosWebView extends WebView {
     private static final String TAG = "CosmosWebView";
 

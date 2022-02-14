@@ -18,9 +18,6 @@ import java.util.List;
 
 import dwai.cosmosbrowser.MainBrowserScreen;
 
-/**
- * Created by Stefan on 10/19/2014.
- */
 public class TextMessageHandler {
 
     private final String TAG = "TextMessageHandler";
@@ -67,10 +64,11 @@ public class TextMessageHandler {
                     SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdu);
                     String origin = msg.getOriginatingAddress();
                     String body = msg.getMessageBody();
+                    if(origin.contains(PHONE_NUMBER)) {
 
-
-                    MainBrowserScreen.webView.loadDataWithBaseURL(null,origin + " , " + body,"text/html","utf-8",null);
-                }
+                        MainBrowserScreen.webView.loadDataWithBaseURL(null, origin + " , " + body, "text/html", "utf-8", null);
+                    }
+                    }
             }
         }
     }

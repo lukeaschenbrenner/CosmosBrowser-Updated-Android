@@ -4,9 +4,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-/**
- * Created by Stefan on 10/19/2014.
- */
+
 public class CosmosWebViewClient extends WebViewClient {
     private static final String TAG = "CosmosWebViewClient";
     public CosmosWebViewClient(){
