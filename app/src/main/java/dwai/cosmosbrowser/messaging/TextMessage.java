@@ -1,6 +1,25 @@
 package dwai.cosmosbrowser.messaging;
 
+import static com.lukeapps.basest.Base10Conversions.SYMBOL_TABLE;
+
 import android.util.Log;
+
+import com.lukeapps.basest.Base10Conversions;
+import com.lukeapps.basest.Decode;
+import com.lukeapps.basest.Encode;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
+import org.brotli.dec.BrotliInputStream;
 
 import dwai.cosmosbrowser.MainBrowserScreen;
 
@@ -25,7 +44,7 @@ public class TextMessage {
         textBuffer = new String[sizeOfParts];
     }
 
-    public void addPart(int index, String part){
+    public void addPart(int index, String part) throws Exception {
         if(index < 0 || index > textBuffer.length || part == null){
             Log.e(TAG, "******* ERROR EITHER PART WAS NULL OR INDEX WAS OUT OF BOUNDS");
             return;
@@ -34,8 +53,56 @@ public class TextMessage {
         textBuffer[index] = part;
         howManyAdded++;
         if(howManyAdded == textBuffer.length){
+            //we have them all! render the page.
+            String reassembled = "";
+            for(String value : textBuffer){
+                if(value == null){
+                    throw new Exception("One of the strings is missing.");
+                }
+                reassembled += value;
+            }
+            int[] nums = new int[textBuffer.length];
+            for(int i = 0; i < nums.length; i++){
+                nums[i] = (Arrays.binarySearch(SYMBOL_TABLE, textBuffer[i]));
+            }
+            Encode decoder = new Encode();//data=nums
+            int[] decoded = decoder.encode_raw(124, 256, 7, 6, nums);
+            byte[] decodedbytes = integersToBytes(decoded);
+            //BrotliInputStream.
+            InputStream targetStream = new ByteArrayInputStream(decodedbytes);
+            BrotliInputStream input = new BrotliInputStream(targetStream);
+            ArrayList<Integer> intsArray = new ArrayList<>();
+            int i;
+            while ((i = input.read()) != -1) {
+                intsArray.add(i);
+                //System.out.print((char) i);
+            }
+            byte[] almostLast = integersToBytes(convertIntegers(intsArray));
+            String s = new String(almostLast, StandardCharsets.UTF_8);
+            MainBrowserScreen.webView.loadDataWithBaseURL(null, s, "text/html", "utf-8", null);
 
         }
+    }
+
+    byte[] integersToBytes(int[] values) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        DataOutputStream dos = new DataOutputStream(baos);
+        for(int i=0; i < values.length; ++i)
+        {
+            dos.writeInt(values[i]);
+        }
+
+        return baos.toByteArray();
+    }
+    public static int[] convertIntegers(List<Integer> integers)
+    {
+        int[] ret = new int[integers.size()];
+        Iterator<Integer> iterator = integers.iterator();
+        for (int i = 0; i < ret.length; i++)
+        {
+            ret[i] = iterator.next().intValue();
+        }
+        return ret;
     }
 
     /**

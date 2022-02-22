@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import dwai.cosmosbrowser.FullTextMessage;
+import com.lukeapps.basest.Base10Conversions;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -16,13 +19,15 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import dwai.cosmosbrowser.MainBrowserScreen;
+
 
 public class TextMessageHandler {
 
     private final String TAG = "TextMessageHandler";
-    public static final String PHONE_NUMBER = "0018443341241";
-
+    //public static final String PHONE_NUMBER = "0018443341241"; //twilio
+    public static final String PHONE_NUMBER = "0014158397780"; //plivo
 
 
 
@@ -52,6 +57,7 @@ public class TextMessageHandler {
     }
 
     public static class SMSReceiver extends BroadcastReceiver {
+        private TextMessage txtmsg;
 
         private final String TAG = "SMSReceiver";
 
@@ -64,9 +70,21 @@ public class TextMessageHandler {
                     SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdu);
                     String origin = msg.getOriginatingAddress();
                     String body = msg.getMessageBody();
-                    if(origin.contains(PHONE_NUMBER)) {
-
-                        MainBrowserScreen.webView.loadDataWithBaseURL(null, origin + " , " + body, "text/html", "utf-8", null);
+                    if(PhoneNumberUtils.compare(origin, PHONE_NUMBER)) { //remove leading zeroes?
+                        if(body.contains("Process starting")){
+                            txtmsg = new TextMessage(Integer.parseInt(body.substring(0, body.indexOf(" "))));
+                        }else{
+                            String textOrder = "";
+                            for(int single : Base10Conversions.r2v(body.substring(0, 2))){
+                                textOrder += Integer.toString(single);
+                            }
+                            try {
+                                txtmsg.addPart(Integer.parseInt(textOrder), body.substring(2, body.length()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    //    MainBrowserScreen.webView.loadDataWithBaseURL(null, body, "text/html", "utf-8", null);
                     }
                     }
             }
@@ -77,15 +95,56 @@ public class TextMessageHandler {
     //old merged methods:
     static FullTextMessage fullTextMessage;
 
-    private void textToTwilio(String whatToSend) throws Exception{
-        fullTextMessage.texts = new ArrayList<String>();
+    public void textToTwilio(String whatToSend) throws Exception{
+        ArrayList<String> texts = new ArrayList<String>();
         String phone_Num = PHONE_NUMBER;
         String send_msg = whatToSend;
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(phone_Num, null, send_msg, null, null);
 
     }
-    private void sendStringToTwilio(String whatToSend){
+/*
+    public static class SMSReceiver extends BroadcastReceiver {
+
+        private final String TAG = "SMSReceiver";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())
+                && String.valueOf(smsMessage.getOriginatingAddress())) {
+                String sms = "";
+                for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
+                    String messageBody = smsMessage.getMessageBody();
+                    sms = sms.concat(messageBody);
+                }
+                MainBrowserScreen.webView.loadDataWithBaseURL(null, sms,"text/html","utf-8",null);
+
+            }
+        }
+        */
+/*
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
+                Bundle extras = intent.getExtras();
+                Object[] pdus = (Object[]) extras.get("pdus");
+                for (Object pdu : pdus) {
+                    SmsMessage msg = SmsMessage.createFromPdu((byte[]) pdu);
+                    String origin = msg.getOriginatingAddress();
+                    String body = msg.getMessageBody();
+
+
+                    MainBrowserScreen.webView.loadDataWithBaseURL(null,origin + " , " + body,"text/html","utf-8",null);
+                }
+            }
+        }
+    }
+*/
+
+    //old merged methods:
+
+
+    public void sendStringToTwilio(String whatToSend){
         String send_msg = whatToSend;
         SmsManager sms = SmsManager.getDefault();
         sms.sendTextMessage(PHONE_NUMBER, null, send_msg, null, null);

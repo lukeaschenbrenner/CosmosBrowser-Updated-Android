@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-public class DynamicImageView extends ImageView {
+public class DynamicImageView extends androidx.appcompat.widget.AppCompatImageView {
 
     public DynamicImageView(final Context context, final AttributeSet attrs) {
         super(context, attrs);

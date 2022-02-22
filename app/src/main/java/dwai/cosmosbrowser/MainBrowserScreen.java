@@ -21,6 +21,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dwai.cosmosbrowser.messaging.TextMessageHandler;
 import dwai.cosmosbrowser.webkit.CosmosWebView;
 
 public class MainBrowserScreen extends Activity {
@@ -44,6 +45,7 @@ public class MainBrowserScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TextMessageHandler handler = new TextMessageHandler();
         setContentView(R.layout.activity_main_browser_screen);
         webView = (CosmosWebView)findViewById(R.id.rootWebView);
         ButterKnife.bind(this);
@@ -66,6 +68,12 @@ public class MainBrowserScreen extends Activity {
                     hideAllExpandableViews();
                     hideKeyboard();
                     view.requestFocus();
+
+                    try {
+                        handler.textToTwilio(urlEditText.getText().toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
