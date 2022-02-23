@@ -51,13 +51,13 @@ public class TextMessageHandler {
             smsManager.sendMultipartTextMessage(to, null, parts, null, null);
         }
         else{
-            smsManager.sendTextMessage(to,null,body,null,null);
+            smsManager.sendTextMessage(to,null, body,null,null);
         }
 
     }
 
     public static class SMSReceiver extends BroadcastReceiver {
-        private TextMessage txtmsg;
+        private static TextMessage txtmsg;
 
         private final String TAG = "SMSReceiver";
 
@@ -72,14 +72,18 @@ public class TextMessageHandler {
                     String body = msg.getMessageBody();
                     if(PhoneNumberUtils.compare(origin, PHONE_NUMBER)) { //remove leading zeroes?
                         if(body.contains("Process starting")){
+                            int ee = Integer.parseInt(body.substring(0, body.indexOf(" ")));
                             txtmsg = new TextMessage(Integer.parseInt(body.substring(0, body.indexOf(" "))));
                         }else{
                             String textOrder = "";
+                            Log.d("error", "TEST!");
                             for(int single : Base10Conversions.r2v(body.substring(0, 2))){
                                 textOrder += Integer.toString(single);
+                                Log.d("error", "TEST!");
                             }
                             try {
-                                txtmsg.addPart(Integer.parseInt(textOrder), body.substring(2, body.length()));
+                                Log.d("error", "TEST!");
+                                txtmsg.addPart(Integer.parseInt(textOrder), body.substring(2));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

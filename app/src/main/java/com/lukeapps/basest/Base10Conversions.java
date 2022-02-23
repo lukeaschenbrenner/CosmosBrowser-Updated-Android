@@ -50,7 +50,7 @@ public class Base10Conversions {
             for (int i = 0, n = data.length; i < n; i++) {
                 char c = data[i].charAt(0);
                 //String c = data[i];
-                num = alphabet_length * num + Arrays.binarySearch(SYMBOL_TABLE, c);
+                num = alphabet_length * num + Arrays.binarySearch(SYMBOL_TABLE, String.valueOf(c));
             }
         }
         return nums;

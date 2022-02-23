@@ -1,5 +1,6 @@
 package dwai.cosmosbrowser;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -58,10 +59,10 @@ public class MainBrowserScreen extends Activity {
         webView.loadUrl("file:///android_asset/testfile.html");
 //        cosmosWebView = new CosmosWebView(this);
         //don't need?
-
-
+        Log.d("tag", "PLEASE SEE THIS");
 
         cosmosWebView.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -77,6 +78,7 @@ public class MainBrowserScreen extends Activity {
                 }
                 return false;
             }
+
         });
         urlEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

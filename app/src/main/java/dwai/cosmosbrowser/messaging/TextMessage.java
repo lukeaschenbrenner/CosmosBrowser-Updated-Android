@@ -61,13 +61,15 @@ public class TextMessage {
                 }
                 reassembled += value;
             }
-            int[] nums = new int[textBuffer.length];
+            String[] reassembledAsArray = Base10Conversions.explode(reassembled);
+            int[] nums = new int[reassembledAsArray.length];
             for(int i = 0; i < nums.length; i++){
-                nums[i] = (Arrays.binarySearch(SYMBOL_TABLE, textBuffer[i]));
-            }
+                nums[i] = (Arrays.binarySearch(SYMBOL_TABLE, reassembledAsArray[i]));
+            }//getting negative values into nums?
             Encode decoder = new Encode();//data=nums
             int[] decoded = decoder.encode_raw(124, 256, 7, 6, nums);
             byte[] decodedbytes = integersToBytes(decoded);
+            //int to bytes gives complete garbage data
             //BrotliInputStream.
             InputStream targetStream = new ByteArrayInputStream(decodedbytes);
             BrotliInputStream input = new BrotliInputStream(targetStream);
