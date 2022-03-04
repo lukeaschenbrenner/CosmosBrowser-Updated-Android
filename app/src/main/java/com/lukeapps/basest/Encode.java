@@ -1,4 +1,6 @@
 package com.lukeapps.basest;
+import android.util.Log;
+
 import java.util.Arrays;
 
 public class Encode {
@@ -25,17 +27,17 @@ public class Encode {
         input_workon = Arrays.copyOf(input_workon, input_workon.length + padding_length);
 
         for (int i = 0; i < input_nearest_length; i += input_ratio) {
-            int store = 0;
+            long store = 0;
             for (int j = 0; j < input_ratio; j++) {
-                int symbol = input_workon[i + j];
+                long symbol = input_workon[i + j];
                 symbol *= (Math.pow((double) input_base, (double) (input_ratio - j - 1)));
                 store += symbol;
             }
             for (int k = 0; k < output_ratio; k++) {
                 int index = ((i / input_ratio) * output_ratio) + k;
-                int symbol = (int) ((int) store / Math.pow((double) output_base, (double)(output_ratio - k - 1)));
-                output_data[index] = symbol;
-                store -= ((int)symbol * (int)Math.pow((double)output_base, (double)(output_ratio - k - 1)));
+                long symbol = ((long)store / (long)(Math.pow((double) output_base, (double)(output_ratio - k - 1))));
+                output_data[index] = (int) symbol;
+                store = (long) (store - (symbol * Math.pow((double)output_base, (double)(output_ratio - k - 1))));
 
             }
         }
