@@ -12,7 +12,9 @@ import dwai.cosmosbrowser.R;
 public class CosmosWebView extends WebView {
     private static final String TAG = "CosmosWebView";
 
-    private WebViewClient webViewClient = new CosmosWebViewClient();
+
+
+    private WebViewClient webViewClient;
 
     public CosmosWebView(Context context) {
         super(context);

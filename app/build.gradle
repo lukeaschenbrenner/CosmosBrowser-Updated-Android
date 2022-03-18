@@ -36,5 +36,6 @@ dependencies {
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
     implementation 'uk.co.ribot:easyadapter:1.5.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.45'
     //implementation group: "com.twilio.sdk", name: "twilio", version: "8.24.0"
 }

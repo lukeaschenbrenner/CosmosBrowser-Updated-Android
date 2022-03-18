@@ -1,14 +1,24 @@
 package dwai.cosmosbrowser.webkit;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
+
+import butterknife.BindView;
+import dwai.cosmosbrowser.MainBrowserScreen;
+import dwai.cosmosbrowser.R;
+import dwai.cosmosbrowser.messaging.TextMessageHandler;
 
 
 public class CosmosWebViewClient extends WebViewClient {
-    private static final String TAG = "CosmosWebViewClient";
-    public CosmosWebViewClient(){
 
+    MainBrowserScreen s;
+    private static final String TAG = "CosmosWebViewClient";
+    public CosmosWebViewClient(MainBrowserScreen s){
+        this.s = s;
     }
 
     /**
@@ -27,10 +37,12 @@ public class CosmosWebViewClient extends WebViewClient {
             Log.e(TAG, "***************** NOT AN INSTANCE OF COSMOS WEB VIEW! ERROR *****************");
             return false;
         }
+        TextMessageHandler handler = TextMessageHandler.getInstance();
+
+        handler.sendTextMessage(url);
 
 
-
-
+        s.UpdateMyText(url);
 
         return true;
     }

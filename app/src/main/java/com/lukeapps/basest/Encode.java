@@ -1,6 +1,7 @@
 package com.lukeapps.basest;
 import android.util.Log;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class Encode {
@@ -15,34 +16,38 @@ public class Encode {
 
     public int[] encode_raw(int input_base, int output_base, int input_ratio, int output_ratio, int[] input_data) {
         int[] input_workon = input_data.clone();
-        int input_length = input_workon.length;
+        long input_length = input_workon.length;
 
         if (input_base < output_base && input_length % input_ratio != 0) {
             throw new IllegalArgumentException("Input data length must be exact multiple of input ratio when output base is larger than input base");
         }
-        int input_nearest_length = nearest_length(input_length, input_ratio);
-        int padding_length = (input_nearest_length - input_length);
+        int input_nearest_length = nearest_length((int) input_length, input_ratio);
+        long padding_length = (input_nearest_length - input_length);
         int output_length = (input_nearest_length / input_ratio) * output_ratio;
         int[] output_data = new int[output_length];
-        input_workon = Arrays.copyOf(input_workon, input_workon.length + padding_length);
+        input_workon = Arrays.copyOf(input_workon, (int) (input_workon.length + padding_length));
 
         for (int i = 0; i < input_nearest_length; i += input_ratio) {
-            long store = 0;
+            BigInteger store = new BigInteger("0");
             for (int j = 0; j < input_ratio; j++) {
-                long symbol = input_workon[i + j];
-                symbol *= (Math.pow((double) input_base, (double) (input_ratio - j - 1)));
-                store += symbol;
+                BigInteger symbol = new BigInteger(String.valueOf(input_workon[i + j]));
+                symbol = symbol.multiply(BigInteger.valueOf((long)input_base).pow((input_ratio - j - 1)));
+                String storeString = store.toString();
+
+                store = store.add(symbol);
+                String symbolString = symbol.toString();
             }
             for (int k = 0; k < output_ratio; k++) {
                 int index = ((i / input_ratio) * output_ratio) + k;
-                long symbol = ((long)store / (long)(Math.pow((double) output_base, (double)(output_ratio - k - 1))));
-                output_data[index] = (int) symbol;
-                store = (long) (store - (symbol * Math.pow((double)output_base, (double)(output_ratio - k - 1))));
+                BigInteger symbol = store.divide(BigInteger.valueOf((long)output_base).pow(output_ratio - k - 1));
+
+                output_data[index] = symbol.intValue();
+                store = store.subtract(symbol.multiply(BigInteger.valueOf((long)output_base).pow(output_ratio-k-1)));
 
             }
         }
 
-        for(int i = output_length-padding_length; i < output_length; i++){
+        for(int i = (int) (output_length-padding_length); i < output_length; i++){
             output_data[i] = output_base;
         }
         return output_data;

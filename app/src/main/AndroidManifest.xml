@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="dwai.cosmosbrowser" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="dwai.cosmosbrowser">
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+
+
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+        <!--- android:name=".MainBrowserScreen"> -->
+
         <activity
             android:name=".MainBrowserScreen"
             android:label="@string/title_activity_main_browser_screen"
@@ -44,7 +55,74 @@
             android:name=".TabsView"
             android:label="@string/title_activity_tabs_view" >
         </activity>
+
+        <activity android:name=".DefaultSMSActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.APP_MESSAGING" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
+        <!--- The below is required to allow Android to consider this app as a default SMS app, so that the number can be blocked & to delete message history with the number -->
+
+        <!-- BroadcastReceiver that listens for incoming SMS messages -->
+        <receiver
+            android:name=".SMSActivities$SmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- BroadcastReceiver that listens for incoming MMS messages -->
+        <receiver
+            android:name=".SMSActivities$MmsReceiver"
+            android:permission="android.permission.BROADCAST_WAP_PUSH"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Activity that allows the user to send new SMS/MMS messages -->
+        <activity android:name=".SMSActivities$ComposeSmsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </activity>
+
+        <!-- Service that delivers messages from the phone "quick response" -->
+        <service
+            android:name=".SMSActivities$HeadlessSmsSendService"
+            android:exported="true"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE">
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
+
     </application>
+
+
 
 </manifest>

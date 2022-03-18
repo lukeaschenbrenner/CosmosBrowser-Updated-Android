@@ -14,6 +14,8 @@ public class Decode {
         for (int s = 0; s < input_workon.length; s++) {
             if (input_workon[s] == input_base) {
                 input_workon[s] = input_base - 1;
+            }else{
+                //input_workon[s] = s;
             }
         }
         Encode encoder = new Encode();
